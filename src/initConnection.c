@@ -25,8 +25,6 @@ MYSQL *initConnection(const DBConfig &dbconfig) {
         0                   // Additional options
     )) {
         finish_with_error(conn);
-    } else {
-        fprintf(stdout, "Conectado a la base de datos %s\n", dbconfig.db);
     }
 
     return conn;

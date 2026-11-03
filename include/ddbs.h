@@ -16,6 +16,6 @@ void finish_with_error(MYSQL *conn);
 
 MYSQL *initConnection(const DBConfig &dbconfig);
 
-DBConfig 
+void newStore(const char* host, const char* db);
 
 #endif /* DDBS_H */
