@@ -2,9 +2,6 @@
 #include <iostream>
 
 void newStore(const char* host, const char* db) {
-    const char* mainUser = "xain";
-    const char* mainPasswd = "";
-    
     std::string query;
     MYSQL_RES *result;
     MYSQL_ROW row;
@@ -16,6 +13,26 @@ void newStore(const char* host, const char* db) {
     morelia_store.passwd = mainPasswd;
     morelia_store.db     = "morelia_store";
     MYSQL *conn = initConnection(morelia_store);
+
+    // Si no existe la base de datos para la nueva sucursal retorna
+    query =  "SELECT SCHEMA_NAME ";
+    query += "FROM information_schema.SCHEMATA ";
+    query += "WHERE SCHEMA_NAME = '";
+    query += db;
+    query += "';";
+
+    if(mysql_query(conn, query.c_str())) {
+        finish_with_error(conn);
+    } else {
+        result = mysql_store_result(conn);
+    }
+
+    if(mysql_num_rows(result) == 0) {
+        fprintf(stdout, "No existe la base de datos de la tienda %s\n", db);
+        mysql_close(conn);
+        mysql_free_result(result);
+        return;
+    }
 
 
 
@@ -31,13 +48,13 @@ void newStore(const char* host, const char* db) {
         result = mysql_store_result(conn);
     }
     
-    if(mysql_num_rows(result) != 0) {
+    if(mysql_num_rows(result) > 0) {
         fprintf(stdout, "Ya existe la tienda %s\n", db);
         mysql_close(conn);
+        mysql_free_result(result);
         return;
     }
 
-    
 
     // Add new store to main store
     query = "INSERT INTO store(host, db_name) VALUES ('"; 
@@ -77,6 +94,10 @@ void newStore(const char* host, const char* db) {
         store.db     = row[2];
         conn = initConnection(store);
 
+        if(conn == NULL) {
+            continue;
+        }
+
         // Itero sobre cada tienda agregando todas las demas existentes
         mysql_data_seek(result, 0);
         while((row = mysql_fetch_row(result))) {
@@ -87,7 +108,7 @@ void newStore(const char* host, const char* db) {
             query += "');";
     
             if(mysql_query(conn, query.c_str())) {
-                finish_with_error(conn);
+                if(finish_with_error(conn)) continue;
             }
 
         }

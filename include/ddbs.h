@@ -5,6 +5,9 @@
 #include <cstdio>
 #include <cstdlib>
 
+inline const char* mainUser = "xain";
+inline const char* mainPasswd = "";
+
 typedef struct DBConfig {
     const char* host;
     const char* user;
@@ -12,7 +15,7 @@ typedef struct DBConfig {
     const char* db;
 } DBConfig;
 
-void finish_with_error(MYSQL *conn);
+int finish_with_error(MYSQL *conn);
 
 MYSQL *initConnection(const DBConfig &dbconfig);
 

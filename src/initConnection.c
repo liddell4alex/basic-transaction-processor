@@ -1,16 +1,19 @@
 #include "ddbs.h"
 
-void finish_with_error(MYSQL *conn) {
+int finish_with_error(MYSQL *conn) {
     fprintf(stderr, "Error: %s\n", mysql_error(conn));
     mysql_close(conn);
-    exit(1);
+
+    return 1;
 }
 
 MYSQL *initConnection(const DBConfig &dbconfig) {
     // Instance and Init connection
     MYSQL *conn;
+    
     if(!(conn = mysql_init(0))) {
         finish_with_error(conn);
+        return NULL;
     }
 
     // Connect to database
@@ -25,6 +28,7 @@ MYSQL *initConnection(const DBConfig &dbconfig) {
         0                   // Additional options
     )) {
         finish_with_error(conn);
+        return NULL;
     }
 
     return conn;
