@@ -28,6 +28,7 @@ int main(int argn, char* args[])
         fprintf(stdout, "3. Buscar cliente\n");
         fprintf(stdout, "4. Nueva tabla distribuida\n");
         fprintf(stdout, "5. Nueva tienda\n");
+        fprintf(stdout, "0. Salir\n");
         fprintf(stdout, ">>> ");
         fflush(stdout);
 
@@ -79,6 +80,10 @@ int main(int argn, char* args[])
                 getchar();
                 
                 break;
+
+            case 0:
+                fprintf(stdout, "Bye :D\n");
+                return 0;
             
             default:
                 clearScreen();
